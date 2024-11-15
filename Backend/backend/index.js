@@ -4,11 +4,14 @@ const connectDB = require('./src/db/connectDB.js')
 const authUserRouter = require('./src/routes/authUserRouter.js')
 const addLocationRouter = require('./src/routes/addLocRouter.js')
 const locationself = require('./src/controllers/location.controller.js')
-const app = express();
+const fromdbRouter = require('./src/routes/fromdb.Router.js')
 
+const app = express();
 app.use(express.json());
 
 app.use('/api/v1/auth',authUserRouter); // for register, login, logout
+
+app.use('/api/v1/fromDB',fromdbRouter);// used to get complete data from database  CRUD only by develepors
 
 app.use('/api/v1/addLocation',addLocationRouter) // add location in db from long. & lat
 

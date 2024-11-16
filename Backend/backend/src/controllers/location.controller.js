@@ -1,41 +1,57 @@
 const axios = require('axios');
+const Location = require('../models/location.model');
 
-// Function to find the public IP address
+// Helper function to fetch the public IP
 const findPublicIP = async () => {
     try {
         const response = await axios.get('https://api.ipify.org?format=json');
         return response.data.ip;
     } catch (error) {
         console.error('Error fetching public IP address:', error);
+        return null;
     }
 };
 
-// const getAddressFromCoords = async (a,b)=>{
-//     try {
-//         const resp = axios.get(`https://us1.locationiq.com/v1/reverse?key=${'pk.d5b02ada729a83058528948a6e066379'}&lat=${a}&lon=${b}&format=json&`)
-//         const add = resp.data.display_name;
-//         return add;
-//     } catch (error) {
-//         console.log(error)
-//     }
-// }
-
-// Function to get the location based on IP address
 const locationself = async (req, res) => {
     try {
-        const myIP = await findPublicIP();  // Fetch the public IP
-        console.log(myIP)
+        const myIP = await findPublicIP();
         if (!myIP) {
-            return res.status(400).json({ error: 'Could not retrieve IP address' });
+            return res.status(400).json({ error: 'Could not retrieve public IP address' });
         }
-        const response = await axios.get(`http://api.ipstack.com/${myIP}?access_key=${'d18e876aabade3a09ad5a00bf26a98f0'}`);
-        res.status(200).json({ location: response.data });
-        
-        // lat=(response.data.latitude);
-        // lon=(response.data.longitude);
-        // const address = getAddressFromCoords(lat,lon);
-        
-        // const {lat}
+        const id = req.user.userId;
+        const response = await axios.get(`http://api.ipstack.com/${myIP}?access_key=${process.env.IPSTACK_API_KEY}`);
+        if (response.status !== 200) {
+            return res.status(400).json({ error: 'Could not retrieve location data' });
+        }
+
+        // Step 3: Log the response to check its structure
+        console.log('API Response:', response.data);
+
+        // Step 4: Check if location data is present and then destructure
+        const { ip, region_code, city, latitude, longitude, location } = response.data;
+
+        if (!location) {
+            return res.status(400).json({ error: 'Location data is missing' });
+        }
+
+        const { capital } = location; // Destructure 'capital' if 'location' is present
+
+        // Step 5: Create a new Location document and save it
+        const newLocation = new Location({
+            user: id, // Save the user _id here
+            ip,
+            region_name: region_code,
+            city,
+            latitude: latitude.toString(),  // Store latitude and longitude as strings (or use numbers if needed)
+            longitude: longitude.toString(),
+            capital: capital ? capital.toString() : 'Unknown', // Ensure capital is available
+        });
+
+        await newLocation.save();
+
+        // Step 6: Return the saved location data as response
+        res.status(200).json(newLocation);
+
     } catch (error) {
         console.error('Error in location retrieval:', error);
         res.status(500).json({ error: 'Internal server error' });

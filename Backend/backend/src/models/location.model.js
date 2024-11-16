@@ -1,26 +1,35 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const locationSchema = new mongoose.Schema({
-    user:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'User'
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',  // Reference to User model
+        required: true
     },
-    state: {
+    ip: {
         type: String,
         required: true,
     },
-    district: {
+    region_name: {
         type: String,
         required: true,
     },
-    galiNumber: {
+    city: {
         type: String,
         required: true,
     },
-    landmark: {
-        type: String,
+    latitude: {
+        type: String,  // Can be a Number if you prefer
         required: true,
     },
-},{timestamps:true});
+    longitude: {
+        type: String,  // Can be a Number if you prefer
+        required: true,
+    },
+    capital: {
+        type: String,
+        required: true,
+    }
+}, { timestamps: true });
 
-module.exports = mongoose.model('Location',locationSchema);
+module.exports = mongoose.model('Location', locationSchema);

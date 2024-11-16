@@ -1,5 +1,6 @@
 import Form from "./Form"
-import UseLocation from "./useLocation"
+import LocationList from "./useLocation"
+
 
 const Page = () => {
   return (

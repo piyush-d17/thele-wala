@@ -13,27 +13,49 @@ const registerUser = async (req, res) => {
     }
 }
 
-const loginUser = async (req,res)=>{
+const loginUser = async (req, res) => {
     try {
-        const {email,password} = req.body;
-        if(!email || !password){
+        const { email, password } = req.body;
+
+        // Check if email and password are provided
+        if (!email || !password) {
             return res.status(400).json({ message: 'Please enter all required fields' });
         }
-        const findUser = await userModel.findOne({email})
-        if(!findUser){
-            return res.status(400).json({ message:'Please register first' });
+
+        // Find user by email
+        const findUser = await userModel.findOne({ email });
+        if (!findUser) {
+            return res.status(400).json({ message: 'Please register first' });
         }
-        const ismatch = await findUser.comparePassword
-        (password);
-        if(!ismatch){
-            return res.status(400).json({ message:'Please enter correct password' });
+
+        // Check if the provided password matches
+        const ismatch = await findUser.comparePassword(password);
+        if (!ismatch) {
+            return res.status(400).json({ message: 'Please enter correct password' });
         }
+
+        // Generate token
         const token = await findUser.createToken();
-        res.status(202).json({user:findUser,token:token,message:'login successfully'})
+
+        // Set the token in an HTTP-only cookie
+        res.cookie('token', token, {
+            httpOnly: true,    // Prevents access to the cookie via JavaScript
+            secure: process.env.NODE_ENV === 'production', // Secure cookie in production (requires HTTPS)
+            maxAge: 3600000,   // Cookie expiration time (1 hour here, adjust as needed)
+            sameSite: 'strict', // To prevent CSRF attacks (optional)
+        });
+
+        // Respond with user data and success message
+        res.status(202).json({
+            user: findUser,
+            message: 'Login successful'
+        });
+
     } catch (error) {
-        res.status(500).json({error:error, message: 'login failed' });
+        res.status(500).json({ error: error, message: 'Login failed' });
     }
-}
+};
+
 
 const logoutUser = (req, res) => {
     res.clearCookie('token', {

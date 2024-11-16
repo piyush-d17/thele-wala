@@ -1,6 +1,11 @@
+import Form from "./Form"
+import UseLocation from "./useLocation"
+
 const Page = () => {
   return (
-    <div>supplier Page</div>
+    <>
+    <Form/>
+    </>
   )
 }
 

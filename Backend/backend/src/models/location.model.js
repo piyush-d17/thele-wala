@@ -6,9 +6,14 @@ const locationSchema = new mongoose.Schema({
         ref: 'User',  // Reference to User model
         required: true
     },
+    role: {
+        type: String,
+        required: true,
+    },
     ip: {
         type: String,
         required: true,
+        unique:true,
     },
     region_name: {
         type: String,

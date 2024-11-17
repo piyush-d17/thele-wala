@@ -19,16 +19,17 @@ const locationself = async (req, res) => {
             return res.status(400).json({ error: 'Could not retrieve public IP address' });
         }
         const id = req.user.userId;
+        const role = req.user.role;
         const response = await axios.get(`http://api.ipstack.com/${myIP}?access_key=${process.env.IPSTACK_API_KEY}`);
         if (response.status !== 200) {
             return res.status(400).json({ error: 'Could not retrieve location data' });
         }
 
         // Step 3: Log the response to check its structure
-        console.log('API Response:', response.data);
+        // console.log('API Response:', response.data);
 
         // Step 4: Check if location data is present and then destructure
-        const { ip, region_code, city, latitude, longitude, location } = response.data;
+        const { ip,region_code, city, latitude, longitude, location } = response.data;
 
         if (!location) {
             return res.status(400).json({ error: 'Location data is missing' });
@@ -39,6 +40,7 @@ const locationself = async (req, res) => {
         // Step 5: Create a new Location document and save it
         const newLocation = new Location({
             user: id, // Save the user _id here
+            role:role,
             ip,
             region_name: region_code,
             city,

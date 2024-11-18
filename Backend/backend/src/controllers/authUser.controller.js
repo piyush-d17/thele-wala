@@ -6,9 +6,11 @@ const registerUser = async (req, res) => {
         if (!name || !email || !password) {
             return res.status(400).json({ message:'Please enter all required fields' });
         }
+        console.log('Received Data:', req.body);
         const newUser = await userModel.create({ name, email, password ,role,aadhar,state,district,galiNumber,landmark,category,phone});
         res.status(201).json({ newUser });
     } catch (error) {
+        console.error('Error in registerUser:', error);
         res.status(500).json({error:error, message: 'Registration failed' });
     }
 }
@@ -44,6 +46,7 @@ const loginUser = async (req, res) => {
             maxAge: 3600000,   // Cookie expiration time (1 hour here, adjust as needed)
             sameSite: 'strict', // To prevent CSRF attacks (optional)
         });
+        console.log("this is token",token);
 
         // Respond with user data and success message
         res.status(202).json({

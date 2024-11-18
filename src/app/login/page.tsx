@@ -1,9 +1,9 @@
-import Form from "./Form"
+import Login from "./Login"
 
 const Page = () => {
   return (
     <>
-    <Form/>
+    <Login/>
     </>
   )
 }

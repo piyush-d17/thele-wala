@@ -1,6 +1,6 @@
 const Page = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white text-black">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[#CEF0F5] text-black">
       <h1 className="text-2xl md:text-4xl text-center mb-6">
         Finding <span className="text-black font-bold">Thele Wala</span> by direct searching
       </h1>

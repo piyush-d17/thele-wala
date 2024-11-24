@@ -8,6 +8,22 @@ const viewData = async (req,res)=>{
         res.status(400).json({error:error});
     }
 }
+const allBuyers = async (req,res)=>{
+    try {
+        const allBuys = await userModel.find({role:'buyer'});
+        return res.status(200).json({all_Buyers:allBuys});
+    } catch (error) {
+        res.status(400).json({error:error});
+    }
+}
+const allseller= async (req,res)=>{
+    try {
+        const allsells = await userModel.find({role:'seller'});
+        return res.status(200).json({all_sellers:allsells});
+    } catch (error) {
+        res.status(400).json({error:error});
+    }
+}
 const viewDataOne = async (req,res)=>{
     try {
         const id = req.params.id;
@@ -47,4 +63,4 @@ const deleteData = async (req,res)=>{
     }
 }
 
-module.exports = {viewData,viewDataOne,updateData,deleteData}
+module.exports = {viewData,allBuyers,allseller,viewDataOne,updateData,deleteData}

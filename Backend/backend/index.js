@@ -10,6 +10,7 @@ const verifyToken = require('./src/middleware/auth.middleware.js');
 const locationself = require('./src/controllers/location.controller.js');
 const placeOrder = require('./src/controllers/placeOrder.controller.js');
 const cookieParser = require('cookie-parser');
+const coorRoute = require('./src/routes/coorRoute.js')
 
 const app = express();
 const server = http.createServer(app);
@@ -26,8 +27,11 @@ app.use(cookieParser());
 // Route to register, login, logout
 app.use('/api/v1/auth', authUserRouter);
 
-// Route for CRUD operations on data from DB (only by developers)
+// Route for CRUD, with all users(Buyers, sellers)
 app.use('/api/v1/fromDB', verifyToken, fromdbRouter);
+
+//Route to get coordinate of logined user
+app.use('/api/v1/coor',verifyToken,coorRoute);
 
 // Route to get IP address and location details with latitude and longitude
 app.get('/api/v1/ip', verifyToken, locationself);
@@ -35,9 +39,10 @@ app.get('/api/v1/ip', verifyToken, locationself);
 // Route to place an order (now with correct middleware setup)
 app.post('/api/v1/order', verifyToken, (req, res) => placeOrder(req, res, io));
 
-connectDB(process.env.URL);
 
-// Start the server
+
+
+connectDB(process.env.URL);
 server.listen(process.env.PORT, () => {
     console.log("Server connected to PORT", process.env.PORT);
 });

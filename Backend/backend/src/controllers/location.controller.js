@@ -14,46 +14,66 @@ const findPublicIP = async () => {
 
 const locationself = async (req, res) => {
     try {
+        // Step 1: Get the public IP address
         const myIP = await findPublicIP();
         if (!myIP) {
             return res.status(400).json({ error: 'Could not retrieve public IP address' });
         }
+
+        // Step 2: Get user details
         const id = req.user.userId;
         const role = req.user.role;
-        const response = await axios.get(`http://api.ipstack.com/${myIP}?access_key=${process.env.IPSTACK_API_KEY}`);
-        if (response.status !== 200) {
+
+        // Step 3: Fetch location data from ipstack API
+        const response = await axios.get(
+            `http://api.ipstack.com/${myIP}?access_key=${process.env.IPSTACK_API_KEY}`
+        );
+
+        if (response.status !== 200 || !response.data) {
             return res.status(400).json({ error: 'Could not retrieve location data' });
         }
 
-        // Step 3: Log the response to check its structure
-        // console.log('API Response:', response.data);
-
-        // Step 4: Check if location data is present and then destructure
-        const { ip,region_code, city, latitude, longitude, location } = response.data;
-
+        const { ip, region_code, city, latitude, longitude, location } = response.data;
         if (!location) {
             return res.status(400).json({ error: 'Location data is missing' });
         }
+        const { capital } = location;
 
-        const { capital } = location; // Destructure 'capital' if 'location' is present
+        // Step 4: Check for duplicate IPs in the database
+        const existingLocation = await Location.findOne({ ip });
+        if (existingLocation) {
+            // Update the existing location document instead of creating a new one
+            existingLocation.user = id;
+            existingLocation.role = role;
+            existingLocation.region_name = region_code;
+            existingLocation.city = city;
+            existingLocation.latitude = latitude.toString();
+            existingLocation.longitude = longitude.toString();
+            existingLocation.capital = capital ? capital.toString() : 'Unknown';
 
-        // Step 5: Create a new Location document and save it
-        const newLocation = new Location({
-            user: id, // Save the user _id here
-            role:role,
+            await existingLocation.save();
+            return res.status(200).json({
+                message: 'Location updated successfully',
+                location: existingLocation,
+            });
+        }
+
+        // Step 5: Create a new location document
+        const newLocation = await Location.create({
+            user: id,
+            role: role,
             ip,
             region_name: region_code,
             city,
-            latitude: latitude.toString(),  // Store latitude and longitude as strings (or use numbers if needed)
+            latitude: latitude.toString(),
             longitude: longitude.toString(),
-            capital: capital ? capital.toString() : 'Unknown', // Ensure capital is available
+            capital: capital ? capital.toString() : 'Unknown',
         });
 
-        await newLocation.save();
-
-        // Step 6: Return the saved location data as response
-        res.status(200).json(newLocation);
-
+        res.status(200).json({
+            message: 'Location added successfully',
+            location: newLocation,
+        });
     } catch (error) {
         console.error('Error in location retrieval:', error);
         res.status(500).json({ error: 'Internal server error' });

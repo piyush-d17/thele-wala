@@ -39,11 +39,11 @@ const userSchema = new mongoose.Schema({
         enum: ['water', 'vegetables', 'fruit', 'iceCream', 'ragPicker', 'juice', 'potter','snacks','plant','bedsheets','others'],
     },
     location:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'location',
+        type:mongoose.Types.ObjectId,
+        ref:'Location',
     },
     orders: [{
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Types.ObjectId,
         ref: 'Order', 
     }]
 }, { timestamps: true });

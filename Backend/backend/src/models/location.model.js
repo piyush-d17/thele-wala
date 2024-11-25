@@ -2,9 +2,8 @@ const mongoose = require('mongoose');
 
 const locationSchema = new mongoose.Schema({
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',  // Reference to User model
-        required: true
+        type: mongoose.Types.ObjectId,
+        ref: 'User',
     },
     role: {
         type: String,
@@ -13,7 +12,6 @@ const locationSchema = new mongoose.Schema({
     ip: {
         type: String,
         required: true,
-        unique:true,
     },
     region_name: {
         type: String,
@@ -24,11 +22,11 @@ const locationSchema = new mongoose.Schema({
         required: true,
     },
     latitude: {
-        type: String,  // Can be a Number if you prefer
+        type: String,
         required: true,
     },
     longitude: {
-        type: String,  // Can be a Number if you prefer
+        type: String,  
         required: true,
     },
     capital: {

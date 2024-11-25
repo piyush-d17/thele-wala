@@ -1,5 +1,22 @@
+import dynamic from "next/dynamic";
+
+const DynamicMap = dynamic(() => import('@/app/components/maps/Map'), { ssr: false });
+
 const Page = () => {
+  const coordinates = [
+    { lat: 28.7041, lng: 77.1025 }, // India Gate
+    { lat: 28.6129, lng: 77.2295 }, // Rashtrapati Bhavan
+    { lat: 28.5245, lng: 77.1855 }, // Qutub Minar
+    { lat: 28.6562, lng: 77.2410 }, // Red Fort
+    { lat: 28.5535, lng: 77.2588 }, // Lotus Temple
+    { lat: 28.6128, lng: 77.2782 }, // Akshardham Temple
+    { lat: 28.6096, lng: 77.2233 }, // Connaught Place
+    { lat: 28.5243, lng: 77.1990 }, // Hauz Khas Village
+    { lat: 28.6790, lng: 77.0697 }, // Chandni Chowk
+    { lat: 28.6130, lng: 77.2193 }, // Jantar Mantar
+  ];
   return (
+    <>
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#CEF0F5] text-black">
       <h1 className="text-2xl md:text-4xl text-center mb-6">
         Finding <span className="text-black font-bold">Thele Wala</span> by direct searching
@@ -31,6 +48,10 @@ const Page = () => {
         Easy & Simple Way to find your need
       </p>
     </div>
+    <div className="w-full bg-green-300">
+    <DynamicMap coordinates={coordinates} />
+    </div>
+    </>
   )
 }
 

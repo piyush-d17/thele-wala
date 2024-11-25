@@ -8,22 +8,37 @@ const viewData = async (req,res)=>{
         res.status(400).json({error:error});
     }
 }
-const allBuyers = async (req,res)=>{
+const view = async(req,res)=>{
     try {
-        const allBuys = await userModel.find({role:'buyer'});
-        return res.status(200).json({all_Buyers:allBuys});
+        res.status(200).json({role:req.user.role});
     } catch (error) {
         res.status(400).json({error:error});
     }
 }
-const allseller= async (req,res)=>{
+const allBuyers = async (req, res) => {
     try {
-        const allsells = await userModel.find({role:'seller'});
-        return res.status(200).json({all_sellers:allsells});
+        const allBuys = await userModel
+            .find({ role: 'buyer' })
+            .populate('location')
+        return res.status(200).json({ all_Buyers: allBuys });
     } catch (error) {
-        res.status(400).json({error:error});
+        res.status(400).json({ error: error });
     }
-}
+};
+
+
+const allseller = async (req, res) => {
+    try {
+        const allsells = await userModel.find({ role: 'seller' })
+        //.populate('location');
+        // console.log(allsells)
+        return res.status(200).json({ all_sellers: allsells });
+    } catch (error) {
+        console.error('Error fetching sellers:', error);
+        return res.status(400).json({ error: error.message });
+    }
+};
+
 const viewDataOne = async (req,res)=>{
     try {
         const id = req.params.id;
@@ -63,4 +78,4 @@ const deleteData = async (req,res)=>{
     }
 }
 
-module.exports = {viewData,allBuyers,allseller,viewDataOne,updateData,deleteData}
+module.exports = {viewData,view,allBuyers,allseller,viewDataOne,updateData,deleteData}

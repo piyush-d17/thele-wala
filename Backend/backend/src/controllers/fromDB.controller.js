@@ -1,13 +1,33 @@
-const userModel = require('../models/user.model.js');
+const User = require('../models/user.model.js');
+const Location = require('../models/location.model.js');
 
-const viewData = async (req,res)=>{
+const allUsersWithLocations = async (req, res) => {
     try {
-        const allUser = await userModel.find();
-        return res.status(200).json({allUsers: allUser});
+        // Use aggregation to fetch all users and populate their associated location
+        const usersWithLocations = await User.aggregate([
+            {
+                $lookup: {
+                    from: 'locations',  // Name of the Location collection (lowercase 'locations')
+                    localField: '_id',  // The _id of User (this will be compared with the user field in Location)
+                    foreignField: 'user',  // The user field in Location model
+                    as: 'location'  // The alias name for the populated location data
+                }
+            },
+            {
+                $unwind: {
+                    path: '$location',  // Unwind the location array to flatten it
+                    preserveNullAndEmptyArrays: true  // In case there is no location associated with the user
+                }
+            }
+        ]);
+
+        // Return the response with all users and their corresponding location data
+        res.status(200).json({ all_users_with_locations: usersWithLocations });
     } catch (error) {
-        res.status(400).json({error:error});
+        console.error(error);
+        res.status(400).json({ error: error.message });
     }
-}
+};
 const view = async(req,res)=>{
     try {
         res.status(200).json({role:req.user.role});
@@ -15,34 +35,73 @@ const view = async(req,res)=>{
         res.status(400).json({error:error});
     }
 }
-const allBuyers = async (req, res) => {
+const allBuyersWithLocations = async (req, res) => {
     try {
-        const allBuys = await userModel
-            .find({ role: 'buyer' })
-            .populate('location')
-        return res.status(200).json({ all_Buyers: allBuys });
+        // Use aggregation to fetch all buyers and their associated location
+        const buyersWithLocations = await User.aggregate([
+            {
+                $match: { role: 'buyer' }  // Match only users with the role 'buyer'
+            },
+            {
+                $lookup: {
+                    from: 'locations',  // Name of the Location collection (lowercase 'locations')
+                    localField: '_id',  // The _id of User (this will be compared with the user field in Location)
+                    foreignField: 'user',  // The user field in Location model
+                    as: 'location'  // The alias name for the populated location data
+                }
+            },
+            {
+                $unwind: {
+                    path: '$location',  // Unwind the location array to flatten it
+                    preserveNullAndEmptyArrays: true  // In case there is no location associated with the user
+                }
+            }
+        ]);
+
+        // Return the response with all buyers and their corresponding location data
+        res.status(200).json({ all_buyers_with_locations: buyersWithLocations });
     } catch (error) {
-        res.status(400).json({ error: error });
+        console.error(error);
+        res.status(400).json({ error: error.message });
     }
 };
 
 
-const allseller = async (req, res) => {
+const allSellersWithLocations = async (req, res) => {
     try {
-        const allsells = await userModel.find({ role: 'seller' })
-        //.populate('location');
-        // console.log(allsells)
-        return res.status(200).json({ all_sellers: allsells });
+        // Use aggregation to fetch all sellers and their associated location
+        const sellersWithLocations = await User.aggregate([
+            {
+                $match: { role: 'seller' }  // Match only users with the role 'seller'
+            },
+            {
+                $lookup: {
+                    from: 'locations',  // Name of the Location collection (lowercase 'locations')
+                    localField: '_id',  // The _id of User (this will be compared with the user field in Location)
+                    foreignField: 'user',  // The user field in Location model
+                    as: 'location'  // The alias name for the populated location data
+                }
+            },
+            {
+                $unwind: {
+                    path: '$location',  // Unwind the location array to flatten it
+                    preserveNullAndEmptyArrays: true  // In case there is no location associated with the user
+                }
+            }
+        ]);
+
+        // Return the response with all sellers and their corresponding location data
+        res.status(200).json({ all_sellers_with_locations: sellersWithLocations });
     } catch (error) {
-        console.error('Error fetching sellers:', error);
-        return res.status(400).json({ error: error.message });
+        console.error(error);
+        res.status(400).json({ error: error.message });
     }
 };
 
 const viewDataOne = async (req,res)=>{
     try {
         const id = req.params.id;
-        const singUser = await userModel.findById(id);
+        const singUser = await User.findById(id);
         if(!singUser){
             return res.status(404).json({error:'User not found'});
         }
@@ -56,7 +115,7 @@ const updateData = async (req,res)=>{
     try {
         const id = req.params.id;
         const update = req.body;
-        const upUser=await userModel.findByIdAndUpdate(id,update,{new:true})
+        const upUser=await User.findByIdAndUpdate(id,update,{new:true})
         if(!upUser){
             return res.status(404).json({ message: "User not found" });
         }
@@ -68,7 +127,7 @@ const updateData = async (req,res)=>{
 const deleteData = async (req,res)=>{
     try {
         const id = req.params.id;
-        const delUser = await userModel.findByIdAndDelete(id);
+        const delUser = await User.findByIdAndDelete(id);
         if(!delUser){
             return res.status(404).json({ message: "User not found" });
         }
@@ -78,4 +137,4 @@ const deleteData = async (req,res)=>{
     }
 }
 
-module.exports = {viewData,view,allBuyers,allseller,viewDataOne,updateData,deleteData}
+module.exports = {allUsersWithLocations,view,allBuyersWithLocations,allSellersWithLocations,viewDataOne,updateData,deleteData}

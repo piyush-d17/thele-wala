@@ -35,18 +35,24 @@ const loginUser = async (req, res) => {
         if (!ismatch) {
             return res.status(400).json({ message: 'Please enter correct password' });
         }
+
+        // Generate token
         const token = await findUser.createToken();
 
         // Set the token in an HTTP-only cookie
-        return res.status(202).cookie('token', token, {
-            httpOnly: true,
-            maxAge: 1*24*60*60*1000,   
-            sameSite: 'strict',
-        }).json({
+        res.cookie('token', token, {
+            httpOnly: true,    // Prevents access to the cookie via JavaScript
+            secure: process.env.NODE_ENV === 'production', // Secure cookie in production (requires HTTPS)
+            maxAge: 3600000,   // Cookie expiration time (1 hour here, adjust as needed)
+            sameSite: 'strict', // To prevent CSRF attacks (optional)
+        });
+        console.log("this is token",token);
+
+        // Respond with user data and success message
+        res.status(202).json({
             user: findUser,
             message: 'Login successful'
-        });;
-        
+        });
 
     } catch (error) {
         res.status(500).json({ error: error, message: 'Login failed' });

@@ -17,10 +17,14 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-app.use(cors());
-app.use(cors({
-    origin: 'http://localhost:3001', // Replace with the URL of your frontend
-}));
+
+const corsOptions = {
+    origin: 'http://localhost:3001', // Replace with your frontend URL
+    methods: 'GET, POST', // Allow necessary HTTP methods
+    credentials: true, // Allow cookies to be sent
+  };
+
+app.use(cors(corsOptions));  
 
 app.use(express.json());
 app.use(cookieParser());

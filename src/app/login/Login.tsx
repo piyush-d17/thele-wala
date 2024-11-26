@@ -23,29 +23,49 @@ const Login = () => {
     setError(null); // Clear previous error
 
     try {
-      const response = await fetch("http://localhost:3000/api/v1/auth/login", {
+      // Step 1: Login API
+      const loginResponse = await fetch("http://localhost:3000/api/v1/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
+        credentials: "include", // Important: Include cookies for cross-origin requests
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
+      if (!loginResponse.ok) {
+        const errorData = await loginResponse.json();
         throw new Error(errorData.message || "Login failed");
       }
 
-      const result = await response.json();
-      console.log("Login successful:", result);
+      console.log("Login successful");
 
-      // Navigate to the search page on successful login
-      router.push("/search");
-      
+      // Step 2: Role Check API
+      const roleResponse = await fetch("http://localhost:3000/api/v1/fromDB/view/em", {
+        method: "GET",
+        credentials: "include", // Include cookies for authentication
+      });
+
+      if (!roleResponse.ok) {
+        const errorData = await roleResponse.json();
+        throw new Error(errorData.message || "Role check failed");
+      }
+
+      const roleResult = await roleResponse.json();
+      console.log("Role check successful:", roleResult);
+
+      // Step 3: Redirect based on role
+      if (roleResult.role === "buyer") {
+        router.push("/search");
+      } else if (roleResult.role === "seller") {
+        router.push("/supplier-live");
+      } else {
+        throw new Error("Invalid role. Access denied.");
+      }
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 

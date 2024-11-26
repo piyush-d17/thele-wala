@@ -18,6 +18,7 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 
+
 const corsOptions = {
     origin: 'http://localhost:3001', // Replace with your frontend URL
     methods: 'GET, POST', // Allow necessary HTTP methods
@@ -25,6 +26,12 @@ const corsOptions = {
   };
 
 app.use(cors(corsOptions));  
+
+app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3001', // Replace with the URL of your frontend
+    credentials: true,
+}));
 
 app.use(express.json());
 app.use(cookieParser());

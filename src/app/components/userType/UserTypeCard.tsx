@@ -11,6 +11,7 @@ const UserTypeCard: React.FC = () => {
   const handleSelect = (type: UserType) => {
     setSelectedType(type);
     // Navigate to the selected page
+    // localStorage.setItem("userType",type);
     if (type === 'buyer') {
       router.push('/buyers');
     } else if (type === 'supplier') {

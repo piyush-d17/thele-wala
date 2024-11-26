@@ -20,6 +20,7 @@ const io = socketIo(server);
 app.use(cors());
 app.use(cors({
     origin: 'http://localhost:3001', // Replace with the URL of your frontend
+    credentials: true,
 }));
 
 app.use(express.json());

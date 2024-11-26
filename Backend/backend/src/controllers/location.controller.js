@@ -34,6 +34,7 @@ const locationself = async (req, res) => {
         }
 
         const { ip, region_code, city, latitude, longitude, location } = response.data;
+        console.log(response.data);
         if (!location) {
             return res.status(400).json({ error: 'Location data is missing' });
         }

@@ -1,58 +1,102 @@
-import dynamic from "next/dynamic";
+"use client";
+import React, { useEffect, useState } from "react";
+import { GoogleMap, Marker, InfoWindow, LoadScriptNext } from "@react-google-maps/api";
 
-const DynamicMap = dynamic(() => import('@/app/components/maps/Map'), { ssr: false });
-
-const Page = () => {
-  const coordinates = [
-    { lat: 28.7041, lng: 77.1025 }, // India Gate
-    { lat: 28.6129, lng: 77.2295 }, // Rashtrapati Bhavan
-    { lat: 28.5245, lng: 77.1855 }, // Qutub Minar
-    { lat: 28.6562, lng: 77.2410 }, // Red Fort
-    { lat: 28.5535, lng: 77.2588 }, // Lotus Temple
-    { lat: 28.6128, lng: 77.2782 }, // Akshardham Temple
-    { lat: 28.6096, lng: 77.2233 }, // Connaught Place
-    { lat: 28.5243, lng: 77.1990 }, // Hauz Khas Village
-    { lat: 28.6790, lng: 77.0697 }, // Chandni Chowk
-    { lat: 28.6130, lng: 77.2193 }, // Jantar Mantar
-  ];
-  return (
-    <>
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#CEF0F5] text-black">
-      <h1 className="text-2xl md:text-4xl text-center mb-6">
-        Finding <span className="text-black font-bold">Thele Wala</span> by direct searching
-      </h1>
-      <div className="relative w-3/4 max-w-md">
-        <input
-          type="text"
-          placeholder="Search..."
-          className="w-full px-4 py-2 border rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-        <button className="absolute inset-y-0 right-3 flex items-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 text-gray-500"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M11 17a6 6 0 100-12 6 6 0 000 12zM21 21l-4.35-4.35"
-            />
-          </svg>
-        </button>
-      </div>
-      <p className="text-sm text-gray-600 mt-56 font-mono font-bold">
-        Easy & Simple Way to find your need
-      </p>
-    </div>
-    <div className="w-full bg-green-300">
-    <DynamicMap coordinates={coordinates} />
-    </div>
-    </>
-  )
+interface User {
+  location?: {
+    latitude?: string;
+    longitude?: string;
+  };
+  role?: string;
 }
 
-export default Page
+
+
+const DynamicMap = ({ coordinates }: { coordinates: { lat: number; lng: number; role: string }[] }) => {
+  const apiKey = "AIzaSyAJHnFPcb4muOFIQZ_7CNbn24le5cI8tXU"; // Replace with your actual Google Maps API key
+  const [selectedMarker, setSelectedMarker] = useState<{ lat: number; lng: number; role: string } | null>(null);
+
+  return (
+    <LoadScriptNext googleMapsApiKey={apiKey}>
+      <GoogleMap
+        zoom={5}
+        center={coordinates.length > 0 ? { lat: coordinates[0].lat, lng: coordinates[0].lng } : { lat: 28.7041, lng: 77.1025 }}
+        mapContainerStyle={{ width: "100%", height: "400px" }}
+      >
+        {coordinates.map((coord, index) => (
+          <Marker
+            key={index}
+            position={{ lat: coord.lat, lng: coord.lng }}
+            onClick={() => setSelectedMarker(coord)}
+          />
+        ))}
+        {selectedMarker && (
+          <InfoWindow
+            position={{ lat: selectedMarker.lat, lng: selectedMarker.lng }}
+            onCloseClick={() => setSelectedMarker(null)}
+          >
+            <div>
+              <p>Role: {selectedMarker.role}</p>
+              <p>Latitude: {selectedMarker.lat}</p>
+              <p>Longitude: {selectedMarker.lng}</p>
+            </div>
+          </InfoWindow>
+        )}
+      </GoogleMap>
+    </LoadScriptNext>
+  );
+};
+
+const Page = () => {
+  const [coordinates, setCoordinates] = useState<{ lat: number; lng: number; role: string }[]>([]);
+
+  const fetchLocationData = async () => {
+    try {
+      // Fetch Location Data
+      console.log("Fetching location data...");
+      const locationResponse = await fetch("http://localhost:3000/api/v1/ip", {
+        method: "GET",
+        credentials: "include",
+      });
+      if (!locationResponse.ok) throw new Error(`Location API Error: ${locationResponse.status}`);
+      const locationData = await locationResponse.json();
+      console.log("Location Data:", locationData);
+  
+      // Fetch All Users with Locations
+      console.log("Fetching role data...");
+      const roleResponse = await fetch("http://localhost:3000/api/v1/fromDB/view", {
+        method: "GET",
+        credentials: "include",
+      });
+      if (!roleResponse.ok) throw new Error(`Role API Error: ${roleResponse.status}`);
+      const roleData = await roleResponse.json();
+      console.log("Role Data:", roleData);
+  
+      // Process Role Data
+      const usersWithLocations = roleData.all_users_with_locations.map((user: User) => ({
+        lat: parseFloat(user.location?.latitude || "0"),
+        lng: parseFloat(user.location?.longitude || "0"),
+        role: user.role || "Unknown",
+      })).filter((user: { lat: number; lng: number; }) => user.lat !== 0 && user.lng !== 0);
+      
+  
+      setCoordinates(usersWithLocations);
+      console.log("Processed Coordinates:", usersWithLocations);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchLocationData();
+  }, []);
+
+  return (
+    <div>
+      <h1 className="text-center text-2xl font-bold my-4">All Buyers and Sellers are on the map</h1>
+      <DynamicMap coordinates={coordinates} />
+    </div>
+  );
+};
+
+export default Page;

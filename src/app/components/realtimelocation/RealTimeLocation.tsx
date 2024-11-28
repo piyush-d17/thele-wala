@@ -25,7 +25,8 @@ export default function RealTimeLocation() {
   const [allLocations, setAllLocations] = useState([]); // State to hold all locations
   const lastSentLocation = useRef(center);
 
-  const haversineDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+
+    const haversineDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
     const R = 6371e3; // Earth radius in meters
     const toRad = (angle: number) => (angle * Math.PI) / 180;
 
@@ -51,6 +52,7 @@ export default function RealTimeLocation() {
       return null;
     }
   };
+
   
   const sendLocationToAPI = async (lat: number, lng: number) => {
     try {
@@ -63,7 +65,6 @@ export default function RealTimeLocation() {
         credentials: "include", // Include cookies in the request
         body: JSON.stringify({ latitude: lat, longitude: lng, ip }),
       });
-  
       if (!response.ok) {
         throw new Error(`API call failed: ${response.statusText}`);
       }
@@ -137,6 +138,7 @@ export default function RealTimeLocation() {
     }
   }, []);
 
+
   if (!isLoaded) return <div>Loading...</div>;
 
   return (
@@ -145,10 +147,13 @@ export default function RealTimeLocation() {
       <Marker position={location} />
 
       {/* Markers for all locations from the API */}
-      {allLocations.map((loc:any) => (
+      {allLocations.map((loc: any) => (
         <Marker
           key={loc._id}
-          position={{ lat: parseFloat(loc.latitude), lng: parseFloat(loc.longitude) }}
+          position={{
+            lat: parseFloat(loc.latitude),
+            lng: parseFloat(loc.longitude),
+          }}
         />
       ))}
     </GoogleMap>

@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { GoogleMap, Marker, InfoWindow, LoadScriptNext } from "@react-google-maps/api";
+import Header from "../components/header/Header";
+import Footer from "../components/footer/Footer";
 
 interface User {
   location?: {
@@ -17,6 +19,8 @@ const DynamicMap = ({ coordinates }: { coordinates: { lat: number; lng: number; 
   const [selectedMarker, setSelectedMarker] = useState<{ lat: number; lng: number; role: string } | null>(null);
 
   return (
+    <>
+    
     <LoadScriptNext googleMapsApiKey={apiKey}>
       <GoogleMap
         zoom={5}
@@ -44,6 +48,7 @@ const DynamicMap = ({ coordinates }: { coordinates: { lat: number; lng: number; 
         )}
       </GoogleMap>
     </LoadScriptNext>
+    </>
   );
 };
 
@@ -93,8 +98,10 @@ const Page = () => {
 
   return (
     <div>
+      <Header/>
       <h1 className="text-center text-2xl font-bold my-4">All Buyers and Sellers are on the map</h1>
       <DynamicMap coordinates={coordinates} />
+      <Footer/>
     </div>
   );
 };

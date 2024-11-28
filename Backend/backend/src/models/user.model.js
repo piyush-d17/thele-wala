@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: ['water', 'vegetables', 'fruit', 'iceCream', 'ragPicker', 'juice', 'potter','snacks','plant','bedsheets','others'],
+        // enum: ['water', 'vegetables', 'fruit', 'iceCream', 'ragPicker', 'juice', 'potter','snacks','plant','bedsheets','others'],
     },
     location:{
         type:mongoose.Types.ObjectId,

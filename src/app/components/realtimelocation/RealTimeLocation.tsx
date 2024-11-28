@@ -25,7 +25,12 @@ export default function RealTimeLocation() {
   const [allLocations, setAllLocations] = useState([]); // State to hold all locations
   const lastSentLocation = useRef(center);
 
-  const haversineDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+  const haversineDistance = (
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ) => {
     const R = 6371e3; // Earth radius in meters
     const toRad = (angle: number) => (angle * Math.PI) / 180;
 
@@ -51,7 +56,6 @@ export default function RealTimeLocation() {
       return null;
     }
   };
-  
   const sendLocationToAPI = async (lat: number, lng: number) => {
     try {
       const ip = await fetchPublicIP(); // Get the user's IP address
@@ -63,11 +67,9 @@ export default function RealTimeLocation() {
         credentials: "include", // Include cookies in the request
         body: JSON.stringify({ latitude: lat, longitude: lng, ip }),
       });
-  
       if (!response.ok) {
         throw new Error(`API call failed: ${response.statusText}`);
       }
-  
       const data = await response.json();
       console.log("Location sent successfully:", data);
     } catch (error) {
@@ -136,19 +138,19 @@ export default function RealTimeLocation() {
       console.error("Geolocation is not supported by this browser.");
     }
   }, []);
-
   if (!isLoaded) return <div>Loading...</div>;
-
   return (
     <GoogleMap mapContainerStyle={containerStyle} center={location} zoom={15}>
       {/* Marker for the user's real-time location */}
       <Marker position={location} />
-
       {/* Markers for all locations from the API */}
-      {allLocations.map((loc:any) => (
+      {allLocations.map((loc: any) => (
         <Marker
           key={loc._id}
-          position={{ lat: parseFloat(loc.latitude), lng: parseFloat(loc.longitude) }}
+          position={{
+            lat: parseFloat(loc.latitude),
+            lng: parseFloat(loc.longitude),
+          }}
         />
       ))}
     </GoogleMap>

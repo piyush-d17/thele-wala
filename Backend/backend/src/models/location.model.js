@@ -1,31 +1,45 @@
 const mongoose = require('mongoose');
 
-const locationSchema = new mongoose.Schema({
-    user: {
-        type: mongoose.Types.ObjectId,
-        ref: 'User',
+const locationSchema = new mongoose.Schema(
+    {
+        user: {
+            type: mongoose.Types.ObjectId,
+            ref: 'User',
+            required: true, // Enforce that a user is associated with the location
+        },
+        role: {
+            type: String,
+            default: 'user', // Default role if not provided
+        },
+        ip: {
+            type: String,
+            required: true,
+        },
+        region_name: {
+            type: String,
+            trim: true, // Remove extra spaces from strings
+        },
+        city: {
+            type: String,
+            trim: true,
+        },
+        latitude: {
+            type: Number,
+            required: true,
+        },
+        longitude: {
+            type: Number,
+            required: true,
+        },
+        capital: {
+            type: String,
+            trim: true,
+        },
     },
-    role: {
-        type: String,
-    },
-    ip: {
-        type: String,
-    },
-    region_name: {
-        type: String,
-    },
-    city: {
-        type: String,
-    },
-    latitude: {
-        type: String,
-    },
-    longitude: {
-        type: String,  
-    },
-    capital: {
-        type: String,
-    }
-}, { timestamps: true });
+    { timestamps: true }
+);
+
+// Create a unique index for latitude, longitude, and IP
+locationSchema.index({ latitude: 1, longitude: 1, ip: 1 }, { unique: true });
 
 module.exports = mongoose.model('Location', locationSchema);

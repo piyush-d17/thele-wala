@@ -12,6 +12,7 @@ const placeOrder = require('./src/controllers/placeOrder.controller.js');
 const goliveRouter = require('./src/routes/goliveRouter.js')
 const cookieParser = require('cookie-parser');
 const coorRoute = require('./src/routes/coorRoute.js')
+const addlocrouter=require('./src/routes/addlocrouter.js')
 
 const app = express();
 const server = http.createServer(app);
@@ -49,6 +50,9 @@ app.post('/api/v1/order', verifyToken, (req, res) => placeOrder(req, res, io));
 
 //6. live go button api
 app.use('/api/v1/golive',verifyToken,goliveRouter);
+
+//7.strore coordinates 
+app.use('/ap/v1/addloc',verifyToken,addlocrouter)
 
 
 

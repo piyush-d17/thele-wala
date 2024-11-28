@@ -7,31 +7,24 @@ const locationSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        required: true,
     },
     ip: {
         type: String,
-        required: true,
     },
     region_name: {
         type: String,
-        required: true,
     },
     city: {
         type: String,
-        required: true,
     },
     latitude: {
         type: String,
-        required: true,
     },
     longitude: {
         type: String,  
-        required: true,
     },
     capital: {
         type: String,
-        required: true,
     }
 }, { timestamps: true });
 

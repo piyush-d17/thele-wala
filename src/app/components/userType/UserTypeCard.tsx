@@ -1,8 +1,8 @@
 "use client";
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-type UserType = 'buyer' | 'supplier';
+type UserType = "buyer" | "supplier";
 
 const UserTypeCard: React.FC = () => {
   const [selectedType, setSelectedType] = useState<UserType | null>(null);
@@ -10,17 +10,30 @@ const UserTypeCard: React.FC = () => {
 
   const handleSelect = (type: UserType) => {
     setSelectedType(type);
-    // Navigate to the selected page
-    // localStorage.setItem("userType",type);
-    if (type === 'buyer') {
-      router.push('/buyers');
-    } else if (type === 'supplier') {
-      router.push('/suppliers');
+    if (type === "buyer") {
+      router.push("/buyers");
+    } else if (type === "supplier") {
+      router.push("/suppliers");
     }
   };
+  const handelLogout = async()=>{
+    const logoutResponse = await fetch('http://localhost:3000/api/v1/auth/logout',{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+      },
+      credentials:"include",
+
+    })
+    if(!logoutResponse.ok){
+      const errorData = await logoutResponse.json();
+      throw new Error(errorData.message || "logout failed");
+    }
+    console.log("logout success");
+  }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#CEF0F5] uiohi">
+    <div className="flex items-center justify-center min-h-screen bg-[#CEF0F5]">
       <div className="max-w-md p-6 bg-white rounded-lg shadow-lg text-center">
         <h2 className="text-2xl font-semibold text-gray-800 mb-6">Choose Your Role</h2>
         

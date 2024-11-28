@@ -3,6 +3,7 @@
 import { useState } from "react";
 import useLocations from "@/app/suppliers/useLocation"; // Import the custom hook src/app/suppliers/useLocation.ts
 import { useRouter } from "next/navigation";
+import { Grid } from 'react-loader-spinner'
 
 const SellerForm = () => {
   const router = useRouter();
@@ -73,7 +74,21 @@ const SellerForm = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Grid
+          visible={true}
+          height="80"
+          width="80"
+          color="#FF8500"
+          ariaLabel="grid-loading"
+          radius="12.5"
+          wrapperStyle={{}}
+          wrapperClass="grid-wrapper"
+        />
+      </div>
+    );
   if (error) return <div>{error}</div>;
 
   // Get states and districts for dropdown
@@ -227,7 +242,7 @@ const SellerForm = () => {
       </div>
 
       {/* Add Locality Dropdown */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className=" md:grid-cols-2 gap-6">
         <div className="flex flex-col">
           <label
             htmlFor="locality"
@@ -251,75 +266,6 @@ const SellerForm = () => {
               </option>
             ))}
           </select>
-        </div>
-        {/* Adding the categories */}
-        <div className="flex flex-col">
-          <label
-            htmlFor="category"
-            className="text-lg font-medium text-gray-600 mb-2"
-          >
-            Category
-          </label>
-          <select
-            id="category"
-            name="category"
-            value={formData.category}
-            onChange={handleSelectChange}
-            className="border-2 border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          >
-            <option value="">Select Category</option>
-            {/* Adding predefined categories */}
-            <option value="water">Water</option>
-            <option value="vegetables">Vegetables</option>
-            <option value="fruit">Fruit</option>
-            <option value="iceCream">Ice Cream</option>
-            <option value="ragPicker">Rag Picker</option>
-            <option value="juice">Juice</option>
-            <option value="potter">Potter</option>
-            <option value="snacks">Snacks</option>
-            <option value="plant">Plant</option>
-            <option value="bedsheets">Bedsheets</option>
-            <option value="others">Others</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="flex flex-col">
-          <label
-            htmlFor="galiNumber"
-            className="text-lg font-medium text-gray-600 mb-2"
-          >
-            Shop Number
-          </label>
-          <input
-            type="text"
-            id="galiNumber"
-            name="galiNumber"
-            value={formData.galiNumber}
-            onChange={handleChange}
-            className="border-2 border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div className="flex flex-col">
-          <label
-            htmlFor="landmark"
-            className="text-lg font-medium text-gray-600 mb-2"
-          >
-            Landmark
-          </label>
-          <input
-            type="text"
-            id="landmark"
-            name="landmark"
-            value={formData.landmark}
-            onChange={handleChange}
-            className="border-2 border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
         </div>
       </div>
 

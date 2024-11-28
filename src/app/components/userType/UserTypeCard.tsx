@@ -20,7 +20,7 @@ const UserTypeCard: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#CEF0F5]">
+    <div className="flex items-center justify-center min-h-screen bg-[#CEF0F5] uiohi">
       <div className="max-w-md p-6 bg-white rounded-lg shadow-lg text-center">
         <h2 className="text-2xl font-semibold text-gray-800 mb-6">Choose Your Role</h2>
         

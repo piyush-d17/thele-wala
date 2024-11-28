@@ -5,11 +5,9 @@ const locationSchema = new mongoose.Schema(
         user: {
             type: mongoose.Types.ObjectId,
             ref: 'User',
-            required: true, // Enforce that a user is associated with the location
         },
         role: {
             type: String,
-            default: 'user', // Default role if not provided
         },
         ip: {
             type: String,
@@ -35,6 +33,12 @@ const locationSchema = new mongoose.Schema(
             type: String,
             trim: true,
         },
+        email:{
+            type:String,
+        },
+        phone:{
+            type:String,
+        }
     },
     { timestamps: true }
 );

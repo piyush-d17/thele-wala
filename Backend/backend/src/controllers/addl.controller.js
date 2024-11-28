@@ -15,6 +15,9 @@ const addlocContr = async (req, res) => {
         if (!latitude || !longitude || !ip) {
             return res.status(400).json({ msg: 'Please provide valid coordinates and IP address.' });
         }
+        const role=req.user.role;
+        const email=req.user.email;
+        const phone=req.user.phone;
 
         // Check if the record already exists
         const existingLocation = await locationModel.findOne({ latitude, longitude, ip });
@@ -23,7 +26,7 @@ const addlocContr = async (req, res) => {
         }
 
         // Create a new record
-        await locationModel.create({ latitude, longitude, ip });
+        await locationModel.create({ latitude, longitude, ip, role ,email,phone});
         return res.status(201).json({ msg: 'Coordinates added successfully.' });
     } catch (error) {
         console.error('Error adding location:', error);

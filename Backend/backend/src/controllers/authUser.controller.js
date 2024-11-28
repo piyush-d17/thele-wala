@@ -50,7 +50,6 @@ const loginUser = async (req, res) => {
 
         // Respond with user data and success message
         res.status(202).json({
-            user: findUser,
             message: 'Login successful'
         });
 

@@ -70,6 +70,7 @@ const allBuyersWithLocations = async (req, res) => {
 const allSellersWithLocations = async (req, res) => {
     try {
         // Use aggregation to fetch all sellers and their associated location
+        
         const sellersWithLocations = await User.aggregate([
             {
                 $match: { role: 'seller' }  // Match only users with the role 'seller'

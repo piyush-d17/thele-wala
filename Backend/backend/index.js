@@ -13,6 +13,7 @@ const goliveRouter = require('./src/routes/goliveRouter.js')
 const cookieParser = require('cookie-parser');
 const coorRoute = require('./src/routes/coorRoute.js')
 const addlocrouter=require('./src/routes/addlocrouter.js')
+const categorouter=require('./src/routes/categorouter.js')
 
 const app = express();
 const server = http.createServer(app);
@@ -54,6 +55,8 @@ app.use('/api/v1/golive',verifyToken,goliveRouter);
 //7.strore coordinates 
 app.use('/ap/v1/addloc',verifyToken,addlocrouter)
 
+//category 
+app.use('/api/v1/cate',verifyToken,categorouter)
 
 
 

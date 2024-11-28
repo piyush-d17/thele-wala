@@ -5,9 +5,11 @@ const locationSchema = new mongoose.Schema(
         user: {
             type: mongoose.Types.ObjectId,
             ref: 'User',
+            required: true, // Enforce that a user is associated with the location
         },
         role: {
-            type: String, // Default role if not provided
+            type: String,
+            default: 'user', // Default role if not provided
         },
         ip: {
             type: String,

@@ -1,5 +1,6 @@
 const express = require('express');
-const http = require('http');
+const http = require("http");
+const { Server } = require("socket.io");
 const socketIo = require('socket.io');
 const cors = require('cors');
 require('dotenv').config();
@@ -14,7 +15,9 @@ const cookieParser = require('cookie-parser');
 const coorRoute = require('./src/routes/coorRoute.js')
 const addlocrouter=require('./src/routes/addlocrouter.js')
 const categorouter=require('./src/routes/categorouter.js')
-
+const {addCategory,viewCategory,searchCategory}=require("./src/controllers/cate.controller.js");
+const onlyseller=require('./src/middleware/onlySeller.middleware.js');
+const onlybuyer=require('./src/middleware/onlybuyer.middleware.js');
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
@@ -28,36 +31,40 @@ const corsOptions = {
   };
 
 app.use(cors(corsOptions));  
-
-
-
+app.use((req, res, next) => {
+  req.io = io; // Attach socket.io to req
+  next();
+});
 app.use(express.json());
 app.use(cookieParser());
 
 //1. Route to register, login, logout
 app.use('/api/v1/auth', authUserRouter);
 
-//2. Route to get IP address and location details with latitude and longitude
-app.get('/api/v1/ip', verifyToken, locationself);
+//2.strore coordinates 
+app.use('/ap/v1/addloc',verifyToken,addlocrouter)
 
 //3. Route for CRUD, with all users(Buyers, sellers)
 app.use('/api/v1/fromDB', verifyToken, fromdbRouter);
 
-//4.Route to get coordinate of logined user
-app.use('/api/v1/coor',verifyToken,coorRoute);
+//4.category 
+app.post('/api/v1/cate/add',verifyToken,addCategory);
+app.post('/api/v1/cate/view',verifyToken,viewCategory);
+app.post('/api/v1/cate/search',verifyToken,(req,res)=>searchCategory(req,res,io));
+
+// app.use('/api/v1/cate',verifyToken,categorouter)
 
 // 5.Route to place an order (now with correct middleware setup)
-app.post('/api/v1/order', verifyToken, (req, res) => placeOrder(req, res, io));
+// app.post('/api/v1/order', verifyToken, (req, res) => placeOrder(req, res, io));
 
-//6. live go button api
-app.use('/api/v1/golive',verifyToken,goliveRouter);
+//(NOT IN USE).Route to get coordinate of logined user 
+// app.use('/api/v1/coor',verifyToken,coorRoute);
 
-//7.strore coordinates 
-app.use('/ap/v1/addloc',verifyToken,addlocrouter)
+//.{NOT IN USE} Route to get IP address and location details with latitude and longitude
+// app.get('/api/v1/ip', verifyToken, locationself);
 
-//category 
-app.use('/api/v1/cate',verifyToken,categorouter)
-
+//(NOT IN USE). live go button api
+// app.use('/api/v1/golive',verifyToken,goliveRouwwwqhyikro
 
 
 connectDB(process.env.URL);

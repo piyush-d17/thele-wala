@@ -16,6 +16,9 @@ const addlocContr = async (req, res) => {
         if (!latitude || !longitude || !ip) {
             return res.status(400).json({ msg: 'Please provide valid coordinates and IP address.' });
         }
+        const role=req.user.role;
+        const email=req.user.email;
+        const phone=req.user.phone;
 
         const role = req.user.role;
         const email = req.user.email;

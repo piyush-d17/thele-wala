@@ -1,8 +1,8 @@
-// const express = require('express');
-// const coorRoute = express.Router();
+const express = require('express');
+const coorRoute = express.Router();
 
-// const latlong = require('../controllers/latlong.controller.js')
+const latlong = require('../controllers/latlong.controller.js')
 
-// coorRoute.route('/lalo').get(latlong);
+coorRoute.route('/lalo').get(latlong);
 
-// module.exports = coorRoute;
+module.exports = coorRoute;

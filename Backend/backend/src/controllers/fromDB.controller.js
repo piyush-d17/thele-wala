@@ -1,9 +1,25 @@
 const User = require('../models/user.model.js');
+const Location = require('../models/location.model.js');
 
 const allUsersWithLocations = async (req, res) => {
     try {
         // Use aggregation to fetch all users and populate their associated location
-        const usersWithLocations =await User.find({});
+        const usersWithLocations = await User.aggregate([
+            {
+                $lookup: {
+                    from: 'locations',  // Name of the Location collection (lowercase 'locations')
+                    localField: '_id',  // The _id of User (this will be compared with the user field in Location)
+                    foreignField: 'user',  // The user field in Location model
+                    as: 'location'  // The alias name for the populated location data
+                }
+            },
+            {
+                $unwind: {
+                    path: '$location',  // Unwind the location array to flatten it
+                    preserveNullAndEmptyArrays: true  // In case there is no location associated with the user
+                }
+            }
+        ]);
 
         // Return the response with all users and their corresponding location data
         res.status(200).json({ all_users_with_locations: usersWithLocations });
@@ -22,8 +38,25 @@ const view = async(req,res)=>{
 const allBuyersWithLocations = async (req, res) => {
     try {
         // Use aggregation to fetch all buyers and their associated location
-        const buyersWithLocations = await User.find({role:'buyer'});
-
+        const buyersWithLocations = await User.aggregate([
+            {
+                $match: { role: 'buyer' }  // Match only users with the role 'buyer'
+            },
+            {
+                $lookup: {
+                    from: 'locations',  // Name of the Location collection (lowercase 'locations')
+                    localField: '_id',  // The _id of User (this will be compared with the user field in Location)
+                    foreignField: 'user',  // The user field in Location model
+                    as: 'location'  // The alias name for the populated location data
+                }
+            },
+            {
+                $unwind: {
+                    path: '$location',  // Unwind the location array to flatten it
+                    preserveNullAndEmptyArrays: true  // In case there is no location associated with the user
+                }
+            }
+        ]);
 
         // Return the response with all buyers and their corresponding location data
         res.status(200).json({ all_buyers_with_locations: buyersWithLocations });
@@ -38,7 +71,25 @@ const allSellersWithLocations = async (req, res) => {
     try {
         // Use aggregation to fetch all sellers and their associated location
         
-        const sellersWithLocations = await User.find({role:'seller'});
+        const sellersWithLocations = await User.aggregate([
+            {
+                $match: { role: 'seller' }  // Match only users with the role 'seller'
+            },
+            {
+                $lookup: {
+                    from: 'locations',  // Name of the Location collection (lowercase 'locations')
+                    localField: '_id',  // The _id of User (this will be compared with the user field in Location)
+                    foreignField: 'user',  // The user field in Location model
+                    as: 'location'  // The alias name for the populated location data
+                }
+            },
+            {
+                $unwind: {
+                    path: '$location',  // Unwind the location array to flatten it
+                    preserveNullAndEmptyArrays: true  // In case there is no location associated with the user
+                }
+            }
+        ]);
 
         // Return the response with all sellers and their corresponding location data
         res.status(200).json({ all_sellers_with_locations: sellersWithLocations });

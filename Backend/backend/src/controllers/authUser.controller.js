@@ -2,18 +2,49 @@ const userModel = require('../models/user.model.js')
 
 const registerUser = async (req, res) => {
     try {
-        const { name, email, password,role ,aadhar,state,district,galiNumber,landmark,category,phone} = req.body;
-        if (!name || !email || !password) {
-            return res.status(400).json({ message:'Please enter all required fields' });
-        }
-        console.log('Received Data:', req.body);
-        const newUser = await userModel.create({ name, email, password ,role,aadhar,state,district,galiNumber,landmark,category,phone});
-        res.status(201).json({ newUser });
+      const {
+        name,
+        email,
+        password,
+        role,
+        aadhar,
+        category,
+        phone,
+        subcategories,
+      } = req.body;
+  
+      // Validate required fields
+      if (!name || !email || !password) {
+        return res.status(400).json({ message: 'Please enter all required fields' });
+      }
+  
+      console.log('Received Data:', req.body);
+  
+      // Create the new user with all fields
+      const newUser = await userModel.create({
+        name,
+        email,
+        password,
+        role,
+        aadhar,
+        category,
+        phone,
+        subcategories,
+      });
+  
+      res.status(201).json({ message: 'User registered successfully', newUser });
     } catch (error) {
-        console.error('Error in registerUser:', error);
-        res.status(500).json({error:error, message: 'Registration failed' });
+      console.error('Error in registerUser:', error);
+  
+      // Handle duplicate email error
+      if (error.code === 11000 && error.keyValue.email) {
+        return res.status(400).json({ message: 'Email is already registered' });
+      }
+  
+      res.status(500).json({ error, message: 'Registration failed' });
     }
-}
+  };
+  
 
 const loginUser = async (req, res) => {
     try {
@@ -46,11 +77,8 @@ const loginUser = async (req, res) => {
             maxAge: 3600000,   // Cookie expiration time (1 hour here, adjust as needed)
             sameSite: 'strict', // To prevent CSRF attacks (optional)
         });
-        console.log("this is token",token);
-
-        // Respond with user data and success message
         res.status(202).json({
-            message: 'Login successful'
+            message: `${email} login successfull`
         });
 
     } catch (error) {

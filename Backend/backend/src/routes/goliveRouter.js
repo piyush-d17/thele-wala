@@ -1,9 +1,9 @@
-const express = require('express')
+// const express = require('express')
 
-const goliveRouter = express.Router();
+// const goliveRouter = express.Router();
 
-const goLivecontroller = require('../controllers/goLive.controller.js')
+// const goLivecontroller = require('../controllers/goLive.controller.js')
 
-goliveRouter.route('/go').get(goLivecontroller);
+// goliveRouter.route('/go').get(goLivecontroller);
 
-module.exports = goliveRouter;
+// module.exports = goliveRouter;

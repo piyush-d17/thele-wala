@@ -190,7 +190,7 @@ const SellerForm = () => {
       </div>
 
       {/* Add State Dropdown */}
-      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="flex flex-col">
           <label
             htmlFor="state"
@@ -212,10 +212,10 @@ const SellerForm = () => {
               </option>
             ))}
           </select>
-        </div> */}
+        </div>
 
         {/* Add District Dropdown */}
-        {/* <div className="flex flex-col">
+        <div className="flex flex-col">
           <label
             htmlFor="district"
             className="text-lg font-medium text-gray-600 mb-2"
@@ -239,10 +239,10 @@ const SellerForm = () => {
             ))}
           </select>
         </div>
-      </div> */}
+      </div>
 
       {/* Add Locality Dropdown */}
-      {/* <div className=" md:grid-cols-2 gap-6">
+      <div className=" md:grid-cols-2 gap-6">
         <div className="flex flex-col">
           <label
             htmlFor="locality"
@@ -267,7 +267,7 @@ const SellerForm = () => {
             ))}
           </select>
         </div>
-      </div> */}
+      </div>
 
       <div className="flex flex-col mb-6">
         <label

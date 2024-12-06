@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import useLocations from "./useLocation"; // Import the custom hook
 import { useRouter } from "next/navigation";
 import { Grid } from "react-loader-spinner";
 
 const SellerForm = () => {
   const router = useRouter();
-  const { locations, loading, error } = useLocations(); // Using the custom hook for locations
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -73,36 +71,6 @@ const SellerForm = () => {
       alert("Failed to submit form. Please try again.");
     }
   };
-
-  if (loading)
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Grid
-          visible={true}
-          height="80"
-          width="80"
-          color="#FF8500"
-          ariaLabel="grid-loading"
-          radius="12.5"
-          wrapperStyle={{}}
-          wrapperClass="grid-wrapper"
-        />
-      </div>
-    );
-  if (error) return <div>{error}</div>;
-
-  // Get states and districts for dropdown
-  const states = locations.map((location) => location.state);
-  const selectedState = locations.find(
-    (location) => location.state === formData.state
-  );
-  const districts = selectedState
-    ? selectedState.districts.map((d) => d.district)
-    : [];
-  const selectedDistrict = selectedState?.districts.find(
-    (d) => d.district === formData.district
-  );
-  const localities = selectedDistrict ? selectedDistrict.localities : [];
 
   return (
     <form
@@ -190,7 +158,7 @@ const SellerForm = () => {
       </div>
 
       {/* Add State Dropdown */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="flex flex-col">
           <label
             htmlFor="state"
@@ -213,10 +181,10 @@ const SellerForm = () => {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
 
         {/* Add District Dropdown */}
-        <div className="flex flex-col">
+        {/* <div className="flex flex-col">
           <label
             htmlFor="district"
             className="text-lg font-medium text-gray-600 mb-2"
@@ -240,10 +208,10 @@ const SellerForm = () => {
             ))}
           </select>
         </div>
-      </div>
+      </div> */}
 
       {/* Add Locality Dropdown */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="flex flex-col">
           <label
             htmlFor="locality"
@@ -267,9 +235,9 @@ const SellerForm = () => {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
         {/* Adding the categories */}
-        <div className="flex flex-col">
+        {/* <div className="flex flex-col">
           <label
             htmlFor="category"
             className="text-lg font-medium text-gray-600 mb-2"
@@ -285,7 +253,6 @@ const SellerForm = () => {
             required
           >
             <option value="">Select Category</option>
-            {/* Adding predefined categories */}
             <option value="water">Water</option>
             <option value="vegetables">Vegetables</option>
             <option value="fruit">Fruit</option>
@@ -299,9 +266,9 @@ const SellerForm = () => {
             <option value="others">Others</option>
           </select>
         </div>
-      </div>
+      </div> */}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="flex flex-col">
           <label
             htmlFor="galiNumber"
@@ -337,7 +304,7 @@ const SellerForm = () => {
             required
           />
         </div>
-      </div>
+      </div> */}
 
       <div className="flex flex-col mb-6">
         <label

@@ -12,7 +12,6 @@ const verifyToken = (req, res, next) => {
         // Attaching user data to the request object
         req.user = {
             userId: data.userId,
-            name:this.name,
             email: data.email,
             role: data.role,
             phone: data.phone,

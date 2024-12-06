@@ -21,7 +21,12 @@ const useCategories = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/v1/cate/view");
+      const response = await axios.get("http://localhost:3000/api/v1/cate/view",{
+        method:"POST",
+        headers: {
+          "Content-Type":"application/json",
+        },
+      });
       const fetchedCategories: Category[] = response.data.categories;
       setCategories(fetchedCategories);
 

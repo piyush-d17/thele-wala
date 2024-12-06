@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import useLocations from "@/app/suppliers/useLocation"; // Import the custom hook src/app/suppliers/useLocation.ts
 import { useRouter } from "next/navigation";
 import { Grid } from 'react-loader-spinner'
 
 const SellerForm = () => {
   const router = useRouter();
-  const { locations, loading, error } = useLocations(); // Using the custom hook for locations
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -73,36 +71,6 @@ const SellerForm = () => {
       alert("Failed to submit form. Please try again.");
     }
   };
-
-  if (loading)
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Grid
-          visible={true}
-          height="80"
-          width="80"
-          color="#FF8500"
-          ariaLabel="grid-loading"
-          radius="12.5"
-          wrapperStyle={{}}
-          wrapperClass="grid-wrapper"
-        />
-      </div>
-    );
-  if (error) return <div>{error}</div>;
-
-  // Get states and districts for dropdown
-  const states = locations.map((location) => location.state);
-  const selectedState = locations.find(
-    (location) => location.state === formData.state
-  );
-  const districts = selectedState
-    ? selectedState.districts.map((d) => d.district)
-    : [];
-  const selectedDistrict = selectedState?.districts.find(
-    (d) => d.district === formData.district
-  );
-  const localities = selectedDistrict ? selectedDistrict.localities : [];
 
   return (
     <form

@@ -5,6 +5,7 @@ const orderSchema = new mongoose.Schema(
         buyer: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
+            required: true,
         },
         seller: {
             type: mongoose.Schema.Types.ObjectId,
@@ -14,16 +15,21 @@ const orderSchema = new mongoose.Schema(
             {
                 category: {
                     type: String,
-                    enum: ['Beverages','Healthy','Desserts','Miscellaneous','Snacks'],
+                    enum: [
+                        'water','vegetables','fruit','iceCream','ragPicker','juice','potter','snacks','plant','bedsheets','others',
+                    ],
+                    required: true,
                 },
                 quantity: {
                     type: Number,
+                    required: true,
                     min: 1,
                 },
             },
         ],
         totalAmount: {
             type: Number,
+            required: true,
         },
         status: {
             type: String,

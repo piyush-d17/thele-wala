@@ -1,8 +1,9 @@
 const locationModel=require('../models/location.model.js');
+const usermodel=require('../models/user.model.js');
 
 const getlocContr=async(req,res)=>{
     try {
-        const all=await locationModel.find({});
+        const all=await usermodel.find({});
         return res.status(200).json({all:all});
     } catch (error) {
         return res.status(400).json({error:error});
@@ -15,21 +16,32 @@ const addlocContr = async (req, res) => {
         if (!latitude || !longitude || !ip) {
             return res.status(400).json({ msg: 'Please provide valid coordinates and IP address.' });
         }
-        const role=req.user.role;
-        const email=req.user.email;
-        const phone=req.user.phone;
 
-        // Check if the record already exists
-        const existingLocation = await locationModel.findOne({ latitude, longitude, ip });
-        if (existingLocation) {
-            return res.status(409).json({ msg: 'Coordinates with this IP already exist.' });
-        }
+        const role = req.user.role;
+        const email = req.user.email;
+        const phone = req.user.phone;
 
-        // Create a new record
-        await locationModel.create({ latitude, longitude, ip, role ,email,phone});
-        return res.status(201).json({ msg: 'Coordinates added successfully.' });
+        // Check if the record with the same IP already exists
+        const existingLocation = await usermodel.findOne({ email });
+
+        // if (existingLocation) {
+        //     // Update the existing record with new latitude and longitude
+        //     existingLocation.latitude = latitude;
+        //     existingLocation.longitude = longitude;
+        //     existingLocation.ip = ip;
+        //     await existingLocation.save();
+
+        //     return res.status(200).json({ msg: 'Coordinates updated successfully.', updatedLocation: existingLocation });
+        // }
+        existingLocation.latitude = latitude;
+        existingLocation.longitude = longitude;
+        existingLocation.ip = ip;
+        await existingLocation.save();
+        // If no record exists, create a new one
+        // const newLocation = await usermodel.create({ latitude, longitude, ip });
+        return res.status(201).json({ msg: 'Coordinates added successfully.', existingLocation });
     } catch (error) {
-        console.error('Error adding location:', error);
+        console.error('Error adding/updating location:', error);
         return res.status(500).json({ error: 'Internal server error.' });
     }
 };
@@ -44,7 +56,7 @@ const uplocContr = async (req, res) => {
         }
 
         // Update the location with validation
-        const updatedLocation = await locationModel.findByIdAndUpdate(
+        const updatedLocation = await usermodel.findByIdAndUpdate(
             id,
             req.body,
             { new: true, runValidators: true } // Return the updated document and run schema validators

@@ -1,66 +1,107 @@
-const mongoose = require('mongoose')
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
+const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
-const userSchema = new mongoose.Schema({
+// Define the schema
+const userSchema = new mongoose.Schema(
+  {
+    location: {
+      type:  mongoose.Schema.Types.ObjectId,
+      ref: 'Location',
+    },
+    subscription:{
+      type:Boolean,
+    },
     name: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     email: {
-        type: String,
-        unique: true,
-        required: true,
+      type: String,
+      unique: true,
+      required: true,
     },
     password: {
-        type: String,
-        required: true,
-    },
-    aadhar: {
-        type: String,
+      type: String,
+      required: true,
     },
     role: {
-        type: String,
-        enum: ['seller', 'buyer'],
-        default: 'buyer',
-    },
-    photo: {
-        type: String,
+      type: String,
+      enum: ['seller', 'buyer'],
     },
     phone: {
-        type: String,
-    },
-    reviews: {
-        type: Number,
-        default: 0,
+      type: String,
     },
     category: {
-        type: String,
-        // enum: ['water', 'vegetables', 'fruit', 'iceCream', 'ragPicker', 'juice', 'potter','snacks','plant','bedsheets','others'],
+      type: String,
+      enum: ['Beverages', 'Healthy', 'Desserts', 'Miscellaneous', 'Snacks'],
     },
-    location:{
-        type:mongoose.Types.ObjectId,
-        ref:'Location',
+    subcategories: [
+      {
+        category: {
+          type: String,
+          required: true,
+        },
+        subcategory: {
+          type: [String], // Array of subcategories for the given category
+        },
+      },
+    ],
+    latitude:{
+      type:String,
     },
-    orders: [{
-        type: mongoose.Types.ObjectId,
-        ref: 'Order', 
-    }]
-}, { timestamps: true });
+    longitude:{
+      type:String,
+    },
+    ip:{
+      type:String,
+    },
+  },
+  { timestamps: true }
+);
 
-userSchema.pre('save',async function () {
+// Hash password before saving to the database
+userSchema.pre('save', async function (next) {
+  // Check if the password field is modified
+  if (!this.isModified('password')) {
+    return next();
+  }
+  try {
     const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password,salt);
-})
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error); // Pass error to the next middleware
+  }
+});
 
-userSchema.methods.comparePassword = async function(candPassword){
-    const mat = await bcrypt.compare(candPassword,this.password);
-    return mat;
-}
+// Method to compare passwords
+userSchema.methods.comparePassword = async function (candPassword) {
+  try {
+    return await bcrypt.compare(candPassword, this.password);
+  } catch (error) {
+    throw new Error('Password comparison failed');
+  }
+};
 
-userSchema.methods.createToken = async function(){
-    const token = jwt.sign({userId:this._id,email:this.email,role:this.role,phone:this.phone},process.env.SECRET,{expiresIn:process.env.EXPIRY})
+// Method to create a JWT token
+userSchema.methods.createToken = function () {
+  try {
+    const token = jwt.sign(
+      {
+        userId: this._id,
+        email: this.email,
+        role: this.role,
+        phone: this.phone,
+      },
+      process.env.SECRET,
+      { expiresIn: process.env.EXPIRY }
+    );
     return token;
-}
+  } catch (error) {
+    throw new Error('Token creation failed');
+  }
+};
 
+// Export the User model
 module.exports = mongoose.model('User', userSchema);

@@ -7,13 +7,11 @@ const connectDB = require('./src/db/connectDB.js');
 const authUserRouter = require('./src/routes/authUserRouter.js');
 const fromdbRouter = require('./src/routes/fromdb.Router.js');
 const verifyToken = require('./src/middleware/auth.middleware.js');
-const locationself = require('./src/controllers/location.controller.js');
-const placeOrder = require('./src/controllers/placeOrder.controller.js');
-const goliveRouter = require('./src/routes/goliveRouter.js')
 const cookieParser = require('cookie-parser');
-const coorRoute = require('./src/routes/coorRoute.js')
 const addlocrouter=require('./src/routes/addlocrouter.js')
-const categorouter=require('./src/routes/categorouter.js')
+const {addCategory,viewCategory,searchCategory}=require("./src/controllers/cate.controller.js");
+const subscription=require('./src/middleware/checkSubscribe.js');
+const subscribeRouter=require('./src/routes/subscribeRouter.js')
 
 const app = express();
 const server = http.createServer(app);
@@ -37,27 +35,19 @@ app.use(cookieParser());
 //1. Route to register, login, logout
 app.use('/api/v1/auth', authUserRouter);
 
-//2. Route to get IP address and location details with latitude and longitude
-app.get('/api/v1/ip', verifyToken, locationself);
+//2.strore coordinates 
+app.use('/ap/v1/addloc',verifyToken,subscription,addlocrouter)
 
 //3. Route for CRUD, with all users(Buyers, sellers)
 app.use('/api/v1/fromDB', verifyToken, fromdbRouter);
 
-//4.Route to get coordinate of logined user
-app.use('/api/v1/coor',verifyToken,coorRoute);
+//4.subscription
+app.use('/api/v1/cost',verifyToken,subscribeRouter);
 
-// 5.Route to place an order (now with correct middleware setup)
-app.post('/api/v1/order', verifyToken, (req, res) => placeOrder(req, res, io));
-
-//6. live go button api
-app.use('/api/v1/golive',verifyToken,goliveRouter);
-
-//7.strore coordinates 
-app.use('/ap/v1/addloc',verifyToken,addlocrouter)
-
-//category 
-app.use('/api/v1/cate',verifyToken,categorouter)
-
+//5.category 
+app.post('/api/v1/cate/add',verifyToken,addCategory);
+app.get('/api/v1/cate/view',verifyToken,viewCategory);
+app.post('/api/v1/cate/search',verifyToken,(req,res)=>searchCategory(req,res,io));
 
 
 connectDB(process.env.URL);

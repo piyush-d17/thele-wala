@@ -14,13 +14,9 @@ const SellerForm = () => {
     password: "",
     role: "buyer",
     aadhar: "",
-    state: "",
-    district: "",
-    locality: "",
-    galiNumber: "",
-    landmark: "",
-    category: "",
+    photo:"",
     phone: "",
+    reviews: ""
   });
 
   // Handle change in form inputs
@@ -90,19 +86,6 @@ const SellerForm = () => {
       </div>
     );
   if (error) return <div>{error}</div>;
-
-  // Get states and districts for dropdown
-  const states = locations.map((location) => location.state);
-  const selectedState = locations.find(
-    (location) => location.state === formData.state
-  );
-  const districts = selectedState
-    ? selectedState.districts.map((d) => d.district)
-    : [];
-  const selectedDistrict = selectedState?.districts.find(
-    (d) => d.district === formData.district
-  );
-  const localities = selectedDistrict ? selectedDistrict.localities : [];
 
   return (
     <form
@@ -186,86 +169,6 @@ const SellerForm = () => {
             className="border-2 border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
-        </div>
-      </div>
-
-      {/* Add State Dropdown */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="flex flex-col">
-          <label
-            htmlFor="state"
-            className="text-lg font-medium text-gray-600 mb-2"
-          >
-            State
-          </label>
-          <select
-            id="state"
-            name="state"
-            value={formData.state}
-            onChange={handleSelectChange}
-            className="border-2 border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Select State</option>
-            {states.map((state, index) => (
-              <option key={index} value={state}>
-                {state}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Add District Dropdown */}
-        <div className="flex flex-col">
-          <label
-            htmlFor="district"
-            className="text-lg font-medium text-gray-600 mb-2"
-          >
-            District
-          </label>
-          <select
-            id="district"
-            name="district"
-            value={formData.district}
-            onChange={handleSelectChange}
-            className="border-2 border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-            disabled={!formData.state}
-          >
-            <option value="">Select District</option>
-            {districts.map((district, index) => (
-              <option key={index} value={district}>
-                {district}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      {/* Add Locality Dropdown */}
-      <div className=" md:grid-cols-2 gap-6">
-        <div className="flex flex-col">
-          <label
-            htmlFor="locality"
-            className="text-lg font-medium text-gray-600 mb-2"
-          >
-            Locality
-          </label>
-          <select
-            id="locality"
-            name="locality"
-            value={formData.locality}
-            onChange={handleSelectChange}
-            className="border-2 border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-            disabled={!formData.district}
-          >
-            <option value="">Select Locality</option>
-            {localities.map((locality, index) => (
-              <option key={index} value={locality}>
-                {locality}
-              </option>
-            ))}
-          </select>
         </div>
       </div>
 

@@ -20,9 +20,9 @@ const io = socketIo(server);
 
 
 const corsOptions = {
-    origin: '*', // Allow requests from any origin
+    origin: 'http://localhost:3001', // Allow requests from any origin
     methods: 'GET, POST, PUT, DELETE', // List all methods you want to allow
-    credentials: false, // Disable cookies if `origin` is set to '*'
+    credentials: true, // Disable cookies if `origin` is set to '*'
 };
 
 app.use(cors(corsOptions));  

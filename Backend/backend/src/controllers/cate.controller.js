@@ -143,7 +143,7 @@ const searchCategory = async (req, res, io) => {
               searchQuery,
           });
           res.status(201).json({ sellersWithLocations:sellersWithLocations,message: 'Order created successfully', newOrder });
-        }, 100);
+        },);
         // console.log("Nearby sellers:", nearbySellers);
       } catch (err) {
         console.error("Error finding nearby sellers:", err);

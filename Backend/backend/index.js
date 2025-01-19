@@ -20,23 +20,22 @@ const io = socketIo(server);
 
 
 const corsOptions = {
-    origin: 'http://localhost:3001', // Replace with your frontend URL
-    methods: 'GET, POST', // Allow necessary HTTP methods
-    credentials: true, // Allow cookies to be sent
-  };
+    origin: '*', // Allow requests from any origin
+    methods: 'GET, POST, PUT, DELETE', // List all methods you want to allow
+    credentials: false, // Disable cookies if `origin` is set to '*'
+};
 
 app.use(cors(corsOptions));  
 
-
-
 app.use(express.json());
 app.use(cookieParser());
+
 
 //1. Route to register, login, logout
 app.use('/api/v1/auth', authUserRouter);
 
 //2.strore coordinates 
-app.use('/ap/v1/addloc',verifyToken,subscription,addlocrouter)
+app.use('/ap/v1/addloc',verifyToken,addlocrouter)
 
 //3. Route for CRUD, with all users(Buyers, sellers)
 app.use('/api/v1/fromDB', verifyToken, fromdbRouter);
@@ -47,10 +46,9 @@ app.use('/api/v1/cost',verifyToken,subscribeRouter);
 //5.category 
 app.post('/api/v1/cate/add',verifyToken,addCategory);
 app.get('/api/v1/cate/view',verifyToken,viewCategory);
-app.post('/api/v1/cate/search',verifyToken,(req,res)=>searchCategory(req,res,io));
-
+app.post('/api/v1/cate/search',verifyToken,(req,res)=>searchCategory(req,res,io));// by searching order message can be sent to sellers
 
 connectDB(process.env.URL);
 server.listen(process.env.PORT, () => {
-    console.log("Server connected to PORT", process.env.PORT);
+  console.log("Server connected to PORT", process.env.PORT);
 });

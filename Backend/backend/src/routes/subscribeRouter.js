@@ -2,9 +2,9 @@ const express =require('express');
 
 const subscribeRouter = express.Router();
 
-const {subcDetail,subsc}=require('../controllers/sub.controller.js')
+const {subsc,payOrder}=require('../controllers/sub.controller.js')
 
-subscribeRouter.route('/get').get(subcDetail);
-subscribeRouter.route('/add').post(subsc);
+subscribeRouter.route('/add').get(subsc);
+subscribeRouter.route('/order').post(payOrder);
 
 module.exports=subscribeRouter;

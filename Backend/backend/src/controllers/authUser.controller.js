@@ -43,7 +43,7 @@ const loginUser = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,    // Prevents access to the cookie via JavaScript
             secure: process.env.NODE_ENV === 'production', // Secure cookie in production (requires HTTPS)
-            maxAge: 3600000,   // Cookie expiration time (1 hour here, adjust as needed)
+            maxAge: 3600000000,   // Cookie expiration time (1 hour here, adjust as needed)
             sameSite: 'strict', // To prevent CSRF attacks (optional)
         });
         console.log("this is token",token);

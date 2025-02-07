@@ -12,6 +12,7 @@ const addlocrouter=require('./src/routes/addlocrouter.js')
 const {addCategory,viewCategory,searchCategory}=require("./src/controllers/cate.controller.js");
 const subscription=require('./src/middleware/checkSubscribe.js');
 const subscribeRouter=require('./src/routes/subscribeRouter.js')
+const profileRouter = require('./src/routes/profileRouter.js')
 
 const app = express();
 const server = http.createServer(app);
@@ -39,6 +40,8 @@ app.use('/ap/v1/addloc',verifyToken,addlocrouter)
 
 //3. Route for CRUD, with all users(Buyers, sellers)
 app.use('/api/v1/fromDB', verifyToken, fromdbRouter);
+
+app.use('/api/v1/myprf',verifyToken,profileRouter)
 
 //4.subscription
 app.use('/api/v1/cost',verifyToken,subscribeRouter);

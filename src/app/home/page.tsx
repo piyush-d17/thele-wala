@@ -80,7 +80,7 @@ const OrderPage = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/v1/cate/search`,
+        `http://localhost:3000/api/v1/order`,
         {
           name: selectedCategory,
           subcategories: selectedSubCategory,
@@ -93,7 +93,7 @@ const OrderPage = () => {
         }
       );
 
-      console.log("Order Response:", response.seller);
+      console.log("Order Response:", response.data);
     } catch (error: any) {
       console.error(
         "Error placing order:",

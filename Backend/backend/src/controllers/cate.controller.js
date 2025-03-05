@@ -113,12 +113,10 @@ const searchCategory = async (req, res) => {
   try {
     const { name, subcategories } = req.body;
     if (!name && !subcategories) {
-      return res
-        .status(400)
-        .json({
-          error:
-            "At least one query parameter (name or subcategories) is required.",
-        });
+      return res.status(400).json({
+        error:
+          "At least one query parameter (name or subcategories) is required.",
+      });
     }
 
     const searchQuery = {};
@@ -148,7 +146,7 @@ const searchCategory = async (req, res) => {
           parseFloat(longitude),
           parseFloat(seller.latitude),
           parseFloat(seller.longitude)
-        ) <= 100000005
+        ) <= 1000000
       ); // 5 km radius
     });
 
@@ -157,24 +155,22 @@ const searchCategory = async (req, res) => {
         .status(404)
         .json({ error: "No sellers found within 5 km of your location." });
     }
-
     const orders = await orderModel.insertMany(
       nearbySellers.map((seller) => ({
-        buyer: req.user.userId, // Ensure `req.user.userId` is correctly set
+        buyer: req.user.userId,
         seller: seller._id,
         items: [
           {
             category: name || "Unknown Category",
-            quantity: 1, // Default quantity (update as needed)
+            quantity: 1,
           },
         ],
-        totalAmount: 0, // Set total amount dynamically if applicable
-        status: "pending", // Default status
+        //totalAmount: 0,
+        status: "pending",
         createdAt: new Date(),
       }))
     );
-
-    return res.status(200).json({ sellers: nearbySellers, orders });
+    return res.status(200).json({ sellers: nearbySellers, order: orders }); //orders
   } catch (error) {
     console.error("Error searching for category:", error);
     return res

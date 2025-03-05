@@ -3,7 +3,7 @@
 import { useState } from "react";
 import useLocations from "@/app/suppliers/useLocation"; // Import the custom hook src/app/suppliers/useLocation.ts
 import { useRouter } from "next/navigation";
-import { Grid } from 'react-loader-spinner'
+import { Grid } from "react-loader-spinner";
 
 const SellerForm = () => {
   const router = useRouter();
@@ -14,9 +14,9 @@ const SellerForm = () => {
     password: "",
     role: "buyer",
     aadhar: "",
-    photo:"",
+    photo: "",
     phone: "",
-    reviews: ""
+    reviews: "",
   });
 
   // Handle change in form inputs
@@ -41,7 +41,7 @@ const SellerForm = () => {
     e.preventDefault(); // Prevent default form submission
 
     console.log("Form submitted:", formData);
-    
+
     try {
       const response = await fetch(
         "http://localhost:3000/api/v1/auth/register",
@@ -53,17 +53,17 @@ const SellerForm = () => {
           body: JSON.stringify(formData),
         }
       );
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      
+
       const result = await response.json();
       console.log("Server response:", result);
 
       // Handle success (e.g., show a success message or redirect)
       alert("You have successfully registered as a new user");
-      router.push('/login');
+      router.push("/login");
     } catch (error) {
       console.error("Error submitting form:", error);
       alert("Failed to submit form. Please try again.");

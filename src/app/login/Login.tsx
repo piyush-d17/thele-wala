@@ -24,14 +24,17 @@ const Login = () => {
 
     try {
       // Step 1: Login API
-      const loginResponse = await fetch("http://localhost:3000/api/v1/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-        credentials: "include", // Important: Include cookies for cross-origin requests
-      });
+      const loginResponse = await fetch(
+        "http://localhost:3000/api/v1/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+          credentials: "include", // Important: Include cookies for cross-origin requests
+        }
+      );
 
       if (!loginResponse.ok) {
         const errorData = await loginResponse.json();
@@ -41,10 +44,13 @@ const Login = () => {
       console.log("Login successful");
 
       // Step 2: Role Check API
-      const roleResponse = await fetch("http://localhost:3000/api/v1/fromDB/view/em", {
-        method: "GET",
-        credentials: "include", // Include cookies for authentication
-      });
+      const roleResponse = await fetch(
+        "http://localhost:3000/api/v1/fromDB/view/em",
+        {
+          method: "GET",
+          credentials: "include", // Include cookies for authentication
+        }
+      );
 
       if (!roleResponse.ok) {
         const errorData = await roleResponse.json();
@@ -58,7 +64,7 @@ const Login = () => {
       if (roleResult.role === "buyer") {
         router.push("/search");
       } else if (roleResult.role === "seller") {
-        router.push("/supplier-live");
+        router.push("/profile");
       } else {
         throw new Error("Invalid role. Access denied.");
       }

@@ -1,6 +1,8 @@
 "use client";
 import axios from "axios";
 import { useState } from "react";
+import Header from "../components/header/Header";
+import Footer from "../components/footer/Footer";
 
 type CategoryData = {
   Beverages: string[];
@@ -103,6 +105,8 @@ const OrderPage = () => {
   };
 
   return (
+    <div>
+    <Header/>
     <div className="min-h-screen bg-gray-50 p-8">
       <h1 className="text-3xl font-bold text-center text-orange-600 mb-8">
         Order Items
@@ -159,7 +163,10 @@ const OrderPage = () => {
           Place Order
         </button>
       </div>
+      <Footer/>
     </div>
+    </div>
+
   );
 };
 

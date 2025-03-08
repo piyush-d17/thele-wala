@@ -32,21 +32,6 @@ const userSchema = new mongoose.Schema(
     phone: {
       type: String,
     },
-    category: {
-      type: String,
-      enum: ['Beverages', 'Healthy', 'Desserts', 'Miscellaneous', 'Snacks'],
-    },
-    subcategories: [
-      {
-        category: {
-          type: String,
-          required: true,
-        },
-        subcategory: {
-          type: [String], // Array of subcategories for the given category
-        },
-      },
-    ],
     latitude:{
       type:String,
     },

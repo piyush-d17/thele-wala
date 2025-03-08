@@ -7,37 +7,54 @@ const orderSchema = new mongoose.Schema(
             ref: 'User',
             required: true,
         },
-        seller: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-        },
+        sellers: [
+            {
+                seller: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'User',
+                    required: true,
+                },
+                status: {
+                    type: String,
+                    enum: ['pending', 'accepted', 'rejected'],
+                    default: 'pending',
+                },
+                acceptedAt: {
+                    type: Date,
+                },
+                rejectedAt: {
+                    type: Date,
+                },
+            },
+        ],
         items: [
             {
                 category: {
                     type: String,
-                    enum: [
-                        'water','vegetables','fruit','iceCream','ragPicker','juice','potter','snacks','plant','bedsheets','others',
-                    ],
                     required: true,
                 },
                 quantity: {
                     type: Number,
-                    required: true,
                     min: 1,
                 },
             },
         ],
         totalAmount: {
             type: Number,
-            required: true,
+            min: 0,
         },
         status: {
             type: String,
-            enum: ['pending', 'accepted', 'fulfilled', 'cancelled'],
+            enum: ['pending', 'accepted', 'fulfilled', 'cancelled', 'rejected'],
             default: 'pending',
         },
-        acceptedAt: {
+        deliveryDate: {
             type: Date,
+        },
+        paymentStatus: {
+            type: String,
+            enum: ['pending', 'paid', 'failed'],
+            default: 'pending',
         },
     },
     { timestamps: true }

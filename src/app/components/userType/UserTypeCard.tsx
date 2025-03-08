@@ -16,21 +16,23 @@ const UserTypeCard: React.FC = () => {
       router.push("/suppliers");
     }
   };
-  const handelLogout = async()=>{
-    const logoutResponse = await fetch('http://localhost:3000/api/v1/auth/logout',{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-      },
-      credentials:"include",
-
-    })
-    if(!logoutResponse.ok){
+  const handelLogout = async () => {
+    const logoutResponse = await fetch(
+      "http://localhost:3000/api/v1/auth/logout",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }
+    );
+    if (!logoutResponse.ok) {
       const errorData = await logoutResponse.json();
       throw new Error(errorData.message || "logout failed");
     }
     console.log("logout success");
-  }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#FFFAF0]">
@@ -57,8 +59,8 @@ const UserTypeCard: React.FC = () => {
             Choose your role in the app
           </h2>
           <p className="text-sm text-gray-600 mt-2">
-            Filling your invoice details and getting started is just a few
-            steps away.
+            Filling your invoice details and getting started is just a few steps
+            away.
           </p>
         </div>
 
@@ -109,12 +111,19 @@ const UserTypeCard: React.FC = () => {
           </button>
         </div>
         <div className="flex justify-between mt-3 w-[90%] ml-3">
-      <a href="/login" className="text-orange-500 font-medium hover:underline">
-              Login
-        </a>
-        <a href="/login" className="text-orange-500 font-medium hover:underline" onClick={handelLogout}>
-              Logout
-        </a>
+          <a
+            href="/login"
+            className="text-orange-500 font-medium hover:underline"
+          >
+            Login
+          </a>
+          <a
+            href="/login"
+            className="text-orange-500 font-medium hover:underline"
+            onClick={handelLogout}
+          >
+            Logout
+          </a>
         </div>
       </div>
     </div>

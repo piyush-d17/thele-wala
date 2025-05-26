@@ -13,7 +13,7 @@ const Header = () => {
       {/* Logo Section */}
       <div className="flex items-center space-x-3">
         <Image
-          src={icon} // Replace with the path to your cart icon
+          src={icon} 
           alt="Cart Icon"
           width={40}
           height={40}
@@ -48,7 +48,7 @@ const Header = () => {
 
       {/* Menu Button */}
       <button
-        onClick={() => console.log("Menu clicked!")} // Replace with toggle logic
+        onClick={() => console.log("Menu clicked!")} 
         className="bg-orange-400 rounded-full w-10 h-10 flex items-center justify-center shadow-lg md:hidden"
       >
         <svg

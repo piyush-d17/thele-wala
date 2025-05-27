@@ -1,6 +1,7 @@
 const menuModel = require("../models/menuModel.model.js");
 const userModel = require("../models/user.model.js");
 const orderModel = require('../models/order.model.js')
+const mailNotification = require("../utils/mail.js");
 const haversineDistance = (lat1, lon1, lat2, lon2) => {
   const toRadians = (degrees) => (degrees * Math.PI) / 180;
   const R = 6371; // Radius of Earth in km
@@ -85,7 +86,7 @@ const addOrders = async (req, res) => {
           createdAt: new Date(), // Timestamp
         },
       ]);
-
+      mailNotification();
     res.status(200).json(orders);
   } catch (error) {
     console.error("Error in addOrders:", error);
